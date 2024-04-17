@@ -2,7 +2,9 @@
 const nextConfig = {
     basePath: "/next-page-transit-demo",
     output: "export",
-    reactStrictMode: true,
+    images: {
+        unoptimized: true,
+    },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
