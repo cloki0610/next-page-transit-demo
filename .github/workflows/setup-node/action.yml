@@ -25,11 +25,10 @@ runs:
     - name: List the state of node modules
       if: ${{ steps.cache-npm-restore.outputs.cache-hit == 'true' }}
       continue-on-error: true
-      run: cd $repo_dir && npm list
+      run: npm list
 
     - name: Install NodeJS modules
-      run: | 
-        cd $repo_dir && npm ci
+      run: npm ci
  
     - name: Save npm module cache
       if: ${{ steps.cache-npm-restore.outputs.cache-hit != 'true' }}
@@ -42,4 +41,4 @@ runs:
     - name: List the state of node modules
       if: ${{ steps.cache-npm-restore.outputs.cache-hit != 'true' }}
       continue-on-error: true
-      run: cd $repo_dir && npm list
+      run: npm list
