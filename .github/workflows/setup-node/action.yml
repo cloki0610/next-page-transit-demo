@@ -4,10 +4,9 @@ runs:
   using: "composite"
   steps:
     - name: Setup Node.js ⚙️
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: 20
-        cache: "npm"
 
     - name: Cache dependencies ⚡
       id: cache_dependencies
@@ -15,30 +14,8 @@ runs:
       with:
         path: node_modules
         key: node-modules-${{ hashFiles('package-lock.json') }}
-    - name: Restore npm module cache
-      uses: actions/cache/restore@v3
-      id: cache-npm-restore
-      with:
-        path: ~/.npm
-        key: node-modules-${{ hashFiles('package-lock.json') }}
 
-    - name: List the state of node modules
-      if: ${{ steps.cache-npm-restore.outputs.cache-hit == 'true' }}
-      continue-on-error: true
-      run: npm list
-
-    - name: Install NodeJS modules
+    - name: Install dependencies 🔧
+      shell: bash
+      if: steps.cache_dependencies.outputs.cache-hit != 'true'
       run: npm ci
- 
-    - name: Save npm module cache
-      if: ${{ steps.cache-npm-restore.outputs.cache-hit != 'true' }}
-      uses: actions/cache/save@v3
-      id: cache-npm-save
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-build-${{ env.cache_name }}-${{ hashFiles('repo/package-lock.json') }}
-
-    - name: List the state of node modules
-      if: ${{ steps.cache-npm-restore.outputs.cache-hit != 'true' }}
-      continue-on-error: true
-      run: npm list
