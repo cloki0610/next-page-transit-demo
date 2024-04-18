@@ -6,8 +6,7 @@ runs:
     - name: Setup Node.js ⚙️
       uses: actions/setup-node@v4
       with:
-        node-version: 20
-        cache: "npm"
+        node-version-file: ".nvmrc"
 
     - name: Cache dependencies ⚡
       id: cache_dependencies
@@ -15,8 +14,6 @@ runs:
       with:
         path: node_modules
         key: node-modules-${{ hashFiles('package-lock.json') }}
-        restore-keys: |
-            ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}-
 
     - name: Install dependencies 🔧
       shell: bash
