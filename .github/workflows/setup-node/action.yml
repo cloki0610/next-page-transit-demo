@@ -9,31 +9,37 @@ runs:
         node-version: 20
         cache: "npm"
 
-      - name: Restore npm module cache
-        uses: actions/cache/restore@v3
-        id: cache-npm-restore
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache_name }}-${{ hashFiles('repo/package-lock.json') }}
+    - name: Cache dependencies ⚡
+      id: cache_dependencies
+      uses: actions/cache@v3
+      with:
+        path: node_modules
+        key: node-modules-${{ hashFiles('package-lock.json') }}
+    - name: Restore npm module cache
+      uses: actions/cache/restore@v3
+      id: cache-npm-restore
+      with:
+        path: ~/.npm
+        key: node-modules-${{ hashFiles('package-lock.json') }}
 
-      - name: List the state of node modules
-        if: ${{ steps.cache-npm-restore.outputs.cache-hit == 'true' }}
-        continue-on-error: true
-        run: cd $repo_dir && npm list
+    - name: List the state of node modules
+      if: ${{ steps.cache-npm-restore.outputs.cache-hit == 'true' }}
+      continue-on-error: true
+      run: cd $repo_dir && npm list
 
-      - name: Install NodeJS modules
-        run: | 
-          cd $repo_dir && npm ci
+    - name: Install NodeJS modules
+      run: | 
+        cd $repo_dir && npm ci
  
-      - name: Save npm module cache
-        if: ${{ steps.cache-npm-restore.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@v3
-        id: cache-npm-save
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache_name }}-${{ hashFiles('repo/package-lock.json') }}
+    - name: Save npm module cache
+      if: ${{ steps.cache-npm-restore.outputs.cache-hit != 'true' }}
+      uses: actions/cache/save@v3
+      id: cache-npm-save
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache_name }}-${{ hashFiles('repo/package-lock.json') }}
 
-      - name: List the state of node modules
-        if: ${{ steps.cache-npm-restore.outputs.cache-hit != 'true' }}
-        continue-on-error: true
-        run: cd $repo_dir && npm list
+    - name: List the state of node modules
+      if: ${{ steps.cache-npm-restore.outputs.cache-hit != 'true' }}
+      continue-on-error: true
+      run: cd $repo_dir && npm list
