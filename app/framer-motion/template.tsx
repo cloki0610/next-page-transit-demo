@@ -16,7 +16,7 @@ export function FrozenRouter(props: PropsWithChildren<{}>) {
 
 export default function Template({ children }: { children: React.ReactNode }) {
     return (
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
             <motion.div
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
